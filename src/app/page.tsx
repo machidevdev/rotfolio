@@ -14,6 +14,7 @@ import { Progress } from "~/components/ui/progress";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { Skeleton } from "~/components/ui/skeleton";
+import { Twitter } from "lucide-react";
 
 // Helper function for formatting numbers
 const formatMarketCap = (marketCap: number): string => {
@@ -73,8 +74,17 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 text-center md:mb-12">
-        <h1 className="text-3xl font-bold md:text-4xl">Coin Rankings</h1>
+        <h1 className="text-3xl font-bold md:text-4xl">Rotfolio Rankings</h1>
         <p className="text-muted-foreground">Top coins ranked by market cap</p>
+        <div className="mx-auto mt-2 flex justify-center">
+          <Link
+            href="https://x.com/machiuwuowo"
+            target="_blank"
+            className="hover:text-primary inline-flex items-center"
+          >
+            <Twitter className="text-muted-foreground h-4 w-4" />
+          </Link>
+        </div>
       </div>
 
       {/* Podium Section */}
