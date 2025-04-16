@@ -245,7 +245,7 @@ export default function Home() {
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     {/* Overlay and Blur */}
-                    <div className="bg-background/90 absolute inset-0 backdrop-blur-xl" />
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
                   </div>
 
                   {/* Content */}
@@ -285,6 +285,29 @@ export default function Home() {
                       </div>
                       <div className="text-muted-foreground text-xs">
                         Market Cap
+                      </div>
+                      <div className="mt-2 flex gap-2">
+                        <Link
+                          target="_blank"
+                          className="hover:cursor-pointer"
+                          href={
+                            "https://t.me/menelaus_trojanbot?start=r-machiuwuowo" +
+                            coin.uniqueId
+                          }
+                        >
+                          <Button size="sm" variant="outline">
+                            Buy
+                          </Button>
+                        </Link>
+                        <Link
+                          target="_blank"
+                          href={`https://dexscreener.com/solana/${coin.raydium_pool}`}
+                          className="hover:cursor-pointer"
+                        >
+                          <Button size="sm" variant="outline">
+                            Screener
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   </div>
