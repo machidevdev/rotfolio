@@ -5,6 +5,8 @@ export const config = {
     "Ctp765BwYitk3ZJDLqHLEdVdbRpC1eoJCZpGb5c8pump",
     "8Y5Biziz3njt9NWc38cJuL76pdfyrvX6SnjtFPeDpump",
     "DNrmDMs2czDaAwgzg2BmvM7Jn5ZqA6VN5huRqCrSpump",
-    "BQX1cjcRHXmrqNtoFWwmE5bZj7RPneTmqXB979b2pump"
+    "BQX1cjcRHXmrqNtoFWwmE5bZj7RPneTmqXB979b2pump",
+    "9cyhDyuLEsJg5hHEjCRGkL7J6TGzfhrGGLPkDKgkpump",
+    "FkJobFHev1JNKhkuPnRGEMCXnbHrPiNvCyzbkZFmpump"
   ],
 };
