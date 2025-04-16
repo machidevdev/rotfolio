@@ -163,14 +163,23 @@ export default function Home() {
                           className="mt-4"
                         />
                       </CardContent>
-                      <CardFooter className="mx-auto pb-4">
+                      <CardFooter className="relative z-50 mx-auto flex flex-row gap-2 pb-4">
                         <Link
+                          target="_blank"
+                          className="hover:cursor-pointer"
                           href={
                             "https://t.me/menelaus_trojanbot?start=r-machiuwuowo" +
                             coin.uniqueId
                           }
                         >
-                          <Button size="sm">Buy on trojan</Button>
+                          <Button size="sm">Buy</Button>
+                        </Link>
+                        <Link
+                          target="_blank"
+                          href={`https://dexscreener.com/solana/${coin.raydium_pool}`}
+                          className="hover:cursor-pointer"
+                        >
+                          <Button size="sm">Screener</Button>
                         </Link>
                       </CardFooter>
                     </div>
