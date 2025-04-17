@@ -11,6 +11,7 @@ export const config = {
     "FTJRC5HXuFKKVk5a7hVL4oFtqjmJPcZLiCvzxMhSpump",
     "FgyV4LdtTtEQNTkc34G7AB7NjzAUYZrgFGfavk8Epump",
     "3siePVhfiR4PNRsRd1LZj5TpfSHP73wzEf4riqfkpump",
-    "2t1hpzSzQNqogmfhSitrnQZnwGMYiRXg9iJTEG3bpump"
+    "2t1hpzSzQNqogmfhSitrnQZnwGMYiRXg9iJTEG3bpump",
+    "85V34eqzUxTyQw521ronwmn6AkxE8Zf9RJUN5NNepump"
   ],
 };
