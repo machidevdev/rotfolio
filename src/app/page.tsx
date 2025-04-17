@@ -292,7 +292,7 @@ export default function Home() {
                           className="hover:cursor-pointer"
                           href={
                             "https://t.me/menelaus_trojanbot?start=r-machiuwuowo" +
-                            coin.uniqueId
+                            coin.raydium_pool
                           }
                         >
                           <Button size="sm" variant="outline">
