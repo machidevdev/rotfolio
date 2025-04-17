@@ -6,6 +6,48 @@ import { config } from "~/config";
 
 // Special coin address for detailed data
 
+interface DexScreenerPair {
+  chainId: string;
+  dexId: string;
+  pairAddress: string;
+  priceUsd: string;
+  priceChange?: {
+    m5?: number;
+    h1?: number;
+    h6?: number;
+    h24?: number;
+  };
+  volume?: {
+    h24: number;
+    h6: number;
+    h1: number;
+    m5: number;
+  };
+}
+
+const dexScreenerPairSchema = z.object({
+  chainId: z.string(),
+  dexId: z.string(),
+  pairAddress: z.string(),
+  priceUsd: z.string(),
+  priceChange: z.object({
+    m5: z.number().optional(),
+    h1: z.number().optional(),
+    h6: z.number().optional(),
+    h24: z.number().optional(),
+  }).optional(),
+  volume: z.object({
+    h24: z.number(),
+    h6: z.number(),
+    h1: z.number(),
+    m5: z.number(),
+  }).optional(),
+});
+
+interface DexScreenerResponse {
+  pairs: DexScreenerPair[];
+}
+
 interface CoinData {
   mint: string;
   name: string;
@@ -33,6 +75,19 @@ interface CoinData {
   nsfw: boolean;
   market_id: string | null;
   usd_market_cap: number;
+  priceChange?: {
+    m5?: number;
+    h1?: number;
+    h6?: number;
+    h24?: number;
+  };
+  volume?: {
+    h24: number;
+    h6: number;
+    h1: number;
+    m5: number;
+  };
+  bestPairAddress?: string;
 }
 
 const coinResponseSchema = z.object({
@@ -80,23 +135,63 @@ async function fetchCoinData(address: string): Promise<CoinData> {
 export const coinsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
     try {
-      // Fetch regular coins data
       const regularCoinsPromises = config.coinAddresses.map(async (address: string, index) => {
         const data = await fetchCoinData(address);
-        const colorIndex = index % blueShades.length;
-        const uniqueId = `${data.mint}-${index.toString()}`;
+        let marketData = undefined;
+        let bestPairAddress = undefined;
         
-        return {
+        try {
+          const secondFetch = await fetch(`https://api.dexscreener.com/token-pairs/v1/solana/${data.mint}`);
+          const rawSecondData = await secondFetch.json() as unknown;
+          
+          // Parse and validate the response
+          if (Array.isArray(rawSecondData)) {
+            const validPairs = rawSecondData
+              .map(pair => {
+                try {
+                  return dexScreenerPairSchema.parse(pair);
+                } catch (e) {
+                  console.error('Failed to parse pair:', e);
+                  return null;
+                }
+              })
+              .filter((pair): pair is DexScreenerPair => pair !== null);
+
+            // Find the pair with highest volume in last 24h
+            if (validPairs.length > 0) {
+              const sortedPairs = validPairs.sort((a, b) => (b.volume?.h24 ?? 0) - (a.volume?.h24 ?? 0));
+              const bestPair = sortedPairs[0];
+              
+              if (bestPair) {
+                marketData = {
+                  priceChange: bestPair.priceChange ?? {},
+                  volume: bestPair.volume ?? {
+                    h24: 0,
+                    h6: 0,
+                    h1: 0,
+                    m5: 0
+                  }
+                };
+                bestPairAddress = bestPair.pairAddress;
+                console.log('Processed market data:', JSON.stringify(marketData, null, 2));
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching DEX data for ${data.name}:`, error);
+        }
+        
+        const finalData = {
           ...data,
-          uniqueId,
-          color: blueShades[colorIndex],
+          ...marketData,
+          bestPairAddress,
+          uniqueId: `${address}-${index}`,
+          color: blueShades[index % blueShades.length],
           isSpecialData: false
         };
+        return finalData;
       });
       
-      // Fetch the special coin data using the real API
-      
-      // Combine regular coins with the special coin if available
       const regularCoinsData = await Promise.all(regularCoinsPromises);
       return regularCoinsData;
     } catch (error) {

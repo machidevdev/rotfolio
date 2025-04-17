@@ -16,6 +16,29 @@ import Link from "next/link";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Twitter } from "lucide-react";
 
+interface CoinWithMarketData {
+  uniqueId: string;
+  name: string;
+  symbol: string;
+  image_uri: string;
+  twitter: string | null;
+  usd_market_cap: number;
+  raydium_pool: string | null;
+  bestPairAddress?: string;
+  priceChange?: {
+    m5?: number;
+    h1?: number;
+    h6?: number;
+    h24?: number;
+  };
+  volume?: {
+    h24: number;
+    h6: number;
+    h1: number;
+    m5: number;
+  };
+}
+
 // Helper function for formatting numbers
 const formatMarketCap = (marketCap: number): string => {
   if (marketCap >= 1_000_000) {
@@ -24,6 +47,23 @@ const formatMarketCap = (marketCap: number): string => {
     return `${(marketCap / 1_000).toFixed(2)}K`;
   }
   return marketCap.toFixed(2);
+};
+
+// Helper function for formatting price change
+const formatPriceChange = (change: number | undefined): string => {
+  if (change === undefined || change === null) return "N/A";
+  return `${change >= 0 ? "+" : ""}${change.toFixed(2)}%`;
+};
+
+// Helper function for formatting volume
+const formatVolume = (volume: number | undefined): string => {
+  if (volume === undefined || volume === null) return "N/A";
+  if (volume >= 1_000_000) {
+    return `$${(volume / 1_000_000).toFixed(2)}M`;
+  } else if (volume >= 1_000) {
+    return `$${(volume / 1_000).toFixed(2)}K`;
+  }
+  return `$${volume.toFixed(2)}`;
 };
 
 // Helper function for podium colors
@@ -64,7 +104,9 @@ export default function Home() {
   });
 
   // Sort coins by market cap in descending order
-  const sortedCoins = data?.sort((a, b) => b.usd_market_cap - a.usd_market_cap);
+  const sortedCoins = (data as CoinWithMarketData[] | undefined)?.sort(
+    (a, b) => b.usd_market_cap - a.usd_market_cap,
+  );
   const highestMarketCap = sortedCoins?.[0]?.usd_market_cap ?? 0;
 
   // Split into podium and rest
@@ -168,12 +210,56 @@ export default function Home() {
                         <div className="text-muted-foreground text-sm">
                           Market Cap
                         </div>
+                        <div className="mt-2 grid grid-cols-3 gap-2 text-sm">
+                          <div>
+                            <div
+                              className={`font-medium ${
+                                coin.priceChange?.h24 !== undefined &&
+                                coin.priceChange.h24 >= 0
+                                  ? "text-green-500"
+                                  : coin.priceChange?.h24 !== undefined
+                                    ? "text-red-500"
+                                    : "text-muted-foreground"
+                              }`}
+                            >
+                              {formatPriceChange(coin.priceChange?.h24)}
+                            </div>
+                            <div className="text-muted-foreground text-xs">
+                              24h
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              className={`font-medium ${
+                                coin.priceChange?.h1 !== undefined &&
+                                coin.priceChange.h1 >= 0
+                                  ? "text-green-500"
+                                  : coin.priceChange?.h1 !== undefined
+                                    ? "text-red-500"
+                                    : "text-muted-foreground"
+                              }`}
+                            >
+                              {formatPriceChange(coin.priceChange?.h1)}
+                            </div>
+                            <div className="text-muted-foreground text-xs">
+                              1h
+                            </div>
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {formatVolume(coin.volume?.h24)}
+                            </div>
+                            <div className="text-muted-foreground text-xs">
+                              Vol
+                            </div>
+                          </div>
+                        </div>
                         <Progress
                           value={(coin.usd_market_cap / highestMarketCap) * 100}
                           className="mt-4"
                         />
                       </CardContent>
-                      <CardFooter className="relative z-50 mx-auto flex flex-row gap-2 pb-4">
+                      <CardFooter className="relative z-50 flex justify-end gap-2 pb-4">
                         <Link
                           target="_blank"
                           className="hover:cursor-pointer"
@@ -186,7 +272,7 @@ export default function Home() {
                         </Link>
                         <Link
                           target="_blank"
-                          href={`https://dexscreener.com/solana/${coin.raydium_pool}`}
+                          href={`https://dexscreener.com/solana/${coin.bestPairAddress ?? coin.raydium_pool}`}
                           className="hover:cursor-pointer"
                         >
                           <Button size="sm">Screener</Button>
@@ -283,16 +369,57 @@ export default function Home() {
                       <div className="font-medium">
                         ${formatMarketCap(coin.usd_market_cap)}
                       </div>
-                      <div className="text-muted-foreground text-xs">
-                        Market Cap
+                      <div className="grid grid-cols-3 gap-2 text-sm">
+                        <div>
+                          <div
+                            className={`font-medium ${
+                              coin.priceChange?.h24 !== undefined &&
+                              coin.priceChange.h24 >= 0
+                                ? "text-green-500"
+                                : coin.priceChange?.h24 !== undefined
+                                  ? "text-red-500"
+                                  : "text-muted-foreground"
+                            }`}
+                          >
+                            {formatPriceChange(coin.priceChange?.h24)}
+                          </div>
+                          <div className="text-muted-foreground text-xs">
+                            24h
+                          </div>
+                        </div>
+                        <div>
+                          <div
+                            className={`font-medium ${
+                              coin.priceChange?.h1 !== undefined &&
+                              coin.priceChange.h1 >= 0
+                                ? "text-green-500"
+                                : coin.priceChange?.h1 !== undefined
+                                  ? "text-red-500"
+                                  : "text-muted-foreground"
+                            }`}
+                          >
+                            {formatPriceChange(coin.priceChange?.h1)}
+                          </div>
+                          <div className="text-muted-foreground text-xs">
+                            1h
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-medium">
+                            {formatVolume(coin.volume?.h24)}
+                          </div>
+                          <div className="text-muted-foreground text-xs">
+                            Vol
+                          </div>
+                        </div>
                       </div>
-                      <div className="mt-2 flex gap-2">
+                      <div className="mt-2 flex justify-end gap-2">
                         <Link
                           target="_blank"
                           className="hover:cursor-pointer"
                           href={
                             "https://t.me/menelaus_trojanbot?start=r-machiuwuowo" +
-                            coin.raydium_pool
+                            coin.uniqueId
                           }
                         >
                           <Button size="sm" variant="outline">
@@ -301,7 +428,7 @@ export default function Home() {
                         </Link>
                         <Link
                           target="_blank"
-                          href={`https://dexscreener.com/solana/${coin.raydium_pool}`}
+                          href={`https://dexscreener.com/solana/${coin.bestPairAddress ?? coin.raydium_pool}`}
                           className="hover:cursor-pointer"
                         >
                           <Button size="sm" variant="outline">
