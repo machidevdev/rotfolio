@@ -336,12 +336,12 @@ export default function Home() {
                   </div>
 
                   {/* Content */}
-                  <div className="hover:bg-muted/5 relative z-10 flex items-center justify-between p-4">
+                  <div className="hover:bg-muted/5 relative z-10 flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-4">
-                      <span className="text-muted-foreground w-8 font-mono text-sm md:w-12">
+                      <span className="text-muted-foreground w-8 font-mono text-sm">
                         #{index + 4}
                       </span>
-                      <div className="ring-muted relative h-8 w-8 overflow-hidden rounded-full ring-2 md:h-10 md:w-10">
+                      <div className="ring-muted relative h-10 w-10 overflow-hidden rounded-full ring-2">
                         <Image
                           src={coin.image_uri}
                           alt={coin.name}
@@ -366,10 +366,17 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-medium">
-                        ${formatMarketCap(coin.usd_market_cap)}
+
+                    <div className="ml-12 flex flex-col gap-2 sm:ml-0 sm:text-right">
+                      <div>
+                        <div className="font-medium">
+                          ${formatMarketCap(coin.usd_market_cap)}
+                        </div>
+                        <div className="text-muted-foreground text-xs">
+                          Market Cap
+                        </div>
                       </div>
+
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div>
                           <div
@@ -414,7 +421,8 @@ export default function Home() {
                           </div>
                         </div>
                       </div>
-                      <div className="mt-2 flex justify-end gap-2">
+
+                      <div className="flex justify-end gap-2">
                         <Link
                           target="_blank"
                           className="hover:cursor-pointer"
