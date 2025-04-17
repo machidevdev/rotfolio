@@ -20,6 +20,7 @@ interface CoinWithMarketData {
   uniqueId: string;
   name: string;
   symbol: string;
+  mint: string;
   image_uri: string;
   twitter: string | null;
   usd_market_cap: number;
@@ -265,7 +266,7 @@ export default function Home() {
                           className="hover:cursor-pointer"
                           href={
                             "https://t.me/menelaus_trojanbot?start=r-machiuwuowo" +
-                            coin.uniqueId
+                            coin.mint
                           }
                         >
                           <Button size="sm">Buy</Button>
@@ -419,7 +420,7 @@ export default function Home() {
                           className="hover:cursor-pointer"
                           href={
                             "https://t.me/menelaus_trojanbot?start=r-machiuwuowo" +
-                            coin.uniqueId
+                            coin.mint
                           }
                         >
                           <Button size="sm" variant="outline">
