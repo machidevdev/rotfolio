@@ -265,7 +265,7 @@ export default function Home() {
                           target="_blank"
                           className="hover:cursor-pointer"
                           href={
-                            "https://t.me/menelaus_trojanbot?start=r-machiuwuowo" +
+                            "https://t.me/menelaus_trojanbot?start=r-machiuwuowo-" +
                             coin.mint
                           }
                         >
